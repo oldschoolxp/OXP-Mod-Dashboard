@@ -24,7 +24,8 @@ export function runSelftest(win, { isInternal, startUrl }) {
       result.title = win.getTitle();
       result.userAgent = await win.webContents.executeJavaScript('navigator.userAgent');
       result.notificationPermission = await win.webContents.executeJavaScript('typeof Notification === "undefined" ? "none" : Notification.permission');
-      result.alertsButton = await win.webContents.executeJavaScript('document.querySelector(\'[aria-label*="Windows-Hinweise"]\')?.getAttribute("aria-pressed") ?? null');
+      result.layout = await win.webContents.executeJavaScript(`({ nav: !!document.querySelector('.site-nav'), footer: !!document.querySelector('.site-footer'), logout: !!document.querySelector('[aria-label^="Abmelden"]'), mainWidth: document.querySelector('main')?.clientWidth, windowWidth: innerWidth, boardHeight: [...document.querySelectorAll('.absolute.flex.flex-col')].reduce((m, p) => Math.max(m, p.offsetTop + p.offsetHeight), 0), windowHeight: innerHeight })`);
+      result.alertsButton =await win.webContents.executeJavaScript('document.querySelector(\'[aria-label*="Windows-Hinweise"]\')?.getAttribute("aria-pressed") ?? null');
       const image = await win.webContents.capturePage();
       fs.writeFileSync(out + '.png', image.toPNG());
     } catch (e) {
