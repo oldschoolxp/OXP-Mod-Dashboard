@@ -1,0 +1,34 @@
+{
+  "name": "oxp-mod-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "OldschoolXP Mod-Dashboard als eigenes Windows-Programm",
+  "main": "app/main.mjs",
+  "author": "OldschoolXP",
+  "scripts": {
+    "start": "electron .",
+    "selftest": "node werkzeuge/selbsttest.mjs",
+    "installer": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "de.oldschoolxp.moddashboard",
+    "productName": "OldschoolXP Mod-Dashboard",
+    "directories": { "output": "dist-installer" },
+    "files": ["app/**/*", "package.json"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "app/assets/icon.ico", "executableName": "OXP-Mod-Dashboard" },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "OXP Mod-Dashboard",
+      "artifactName": "OXP-Mod-Dashboard-Setup-${version}.${ext}"
+    }
+  }
+}

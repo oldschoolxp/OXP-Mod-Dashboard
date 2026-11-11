@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self'">
+<title>OXP Mod-Dashboard</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    display: grid; place-items: center;
+    background: radial-gradient(ellipse at top, #2a1d44 0%, #14121c 60%);
+    color: #ece8f6; font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+  }
+  .card {
+    max-width: 420px; padding: 32px; text-align: center;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px;
+  }
+  img { width: 72px; height: 72px; }
+  h1 { font-size: 20px; margin: 14px 0 6px; }
+  p { color: #b7b0c8; margin: 0 0 20px; }
+  small { display: block; margin-top: 14px; color: #7d7690; word-break: break-word; }
+  button {
+    font: 600 14px "Segoe UI", system-ui, sans-serif; color: #fff; cursor: pointer;
+    border: 0; border-radius: 999px; padding: 10px 22px;
+    background: linear-gradient(135deg, #a66bff, #8b45f0 55%, #6d28d9);
+  }
+  button:focus-visible { outline: 2px solid #d9c2ff; outline-offset: 3px; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img src="assets/logo.png" alt="">
+    <h1>Keine Verbindung</h1>
+    <p>Das Mod-Dashboard braucht Internet. Prüf die Verbindung und versuch es dann nochmal.</p>
+    <button id="retry" type="button" autofocus>Nochmal versuchen</button>
+    <small id="detail"></small>
+  </main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const target = params.get('ziel') || 'https://www.oldschoolxp.de/mod';
+    const detail = params.get('fehler');
+    if (detail) document.getElementById('detail').textContent = 'Technischer Hinweis: ' + detail;
+    document.getElementById('retry').addEventListener('click', () => { location.href = target; });
+    window.addEventListener('online', () => { location.href = target; });
+  </script>
+</body>
+</html>
