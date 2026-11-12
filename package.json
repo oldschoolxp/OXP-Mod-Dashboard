@@ -1,6 +1,6 @@
 {
   "name": "oxp-mod-dashboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "OldschoolXP Mod-Dashboard als eigenes Windows-Programm",
@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "selftest": "node werkzeuge/selbsttest.mjs",
-    "installer": "electron-builder --win nsis"
+    "installer": "electron-builder --win nsis",
+    "release": "electron-builder --win nsis --publish always"
   },
   "devDependencies": {
     "electron": "^44.4.3",
@@ -18,9 +19,25 @@
   "build": {
     "appId": "de.oldschoolxp.moddashboard",
     "productName": "OldschoolXP Mod-Dashboard",
-    "directories": { "output": "dist-installer" },
-    "files": ["app/**/*", "package.json"],
-    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "app/assets/icon.ico", "executableName": "OXP-Mod-Dashboard" },
+    "directories": {
+      "output": "dist-installer"
+    },
+    "files": [
+      "app/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "app/assets/icon.ico",
+      "executableName": "OXP-Mod-Dashboard"
+    },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
@@ -29,6 +46,21 @@
       "createStartMenuShortcut": true,
       "shortcutName": "OXP Mod-Dashboard",
       "artifactName": "OXP-Mod-Dashboard-Setup-${version}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "oldschoolxp",
+        "repo": "OXP-Mod-Dashboard",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oldschoolxp/OXP-Mod-Dashboard.git"
   }
 }

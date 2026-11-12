@@ -6,6 +6,7 @@ import { app, BrowserWindow, Menu, shell, session, screen } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { initUpdater, checkForUpdatesManually, selftestUpdate } from './updater.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const START_URL = process.env.OXP_MOD_URL || 'https://www.oldschoolxp.de/mod';
@@ -99,6 +100,7 @@ function buildMenu() {
         label: 'Hilfe',
         submenu: [
           { label: 'Im Browser öffnen', click: () => openExternal(win.webContents.getURL().startsWith('http') ? win.webContents.getURL() : START_URL) },
+          { label: 'Nach Updates suchen', click: () => checkForUpdatesManually() },
           { label: `Version ${app.getVersion()}`, enabled: false },
         ],
       },
@@ -195,8 +197,19 @@ app.on('second-instance', () => {
 app.whenReady().then(async () => {
   configureSession();
   const selftest = process.env.OXP_SELFTEST ? (await import('./selbsttest-intern.mjs')).runSelftest : null;
+  // Nur für den Update-Test: prüft und lädt die neueste Version, installiert nichts und beendet sich.
+  if (process.env.OXP_TEST_UPDATE) {
+    const result = await selftestUpdate().catch((e) => ({ error: String(e?.message || e) }));
+    fs.writeFileSync(process.env.OXP_TEST_UPDATE, JSON.stringify(result, null, 2));
+    app.quit();
+    return;
+  }
   createWindow();
   selftest?.(win, { isInternal, startUrl: START_URL });
+  // Nur in der installierten Version (nicht beim Entwickeln oder im Selbsttest) nach Updates suchen.
+  if (app.isPackaged && !process.env.OXP_SELFTEST) {
+    initUpdater(win, { onStatusChange: (text) => win && !win.isDestroyed() && win.setTitle(text ? `OXP Mod-Dashboard – ${text}` : 'OXP Mod-Dashboard') });
+  }
 });
 
 app.on('window-all-closed', () => app.quit());
