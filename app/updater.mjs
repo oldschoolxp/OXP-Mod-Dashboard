@@ -56,7 +56,11 @@ export function initUpdater(window, { onStatusChange } = {}) {
 
   autoUpdater.on('checking-for-update', () => status('Suche nach Updates …'));
   autoUpdater.on('update-available', (info) => status(`Lade Version ${info.version} …`));
-  autoUpdater.on('download-progress', (p) => status(`Lade Update … ${Math.round(p.percent)} %`));
+  autoUpdater.on('download-progress', (p) => {
+    status(`Lade Update … ${Math.round(p.percent)} %`);
+    // Fortschritt auch in der Taskleiste (seit 1.1.1)
+    if (win && !win.isDestroyed()) win.setProgressBar(Math.max(0, Math.min(1, p.percent / 100)));
+  });
   autoUpdater.on('update-not-available', () => {
     status('');
     if (manualCheck && win && !win.isDestroyed()) {
@@ -68,10 +72,16 @@ export function initUpdater(window, { onStatusChange } = {}) {
     status('');
     readyVersion = info.version;
     manualCheck = false;
+    if (win && !win.isDestroyed()) {
+      win.setProgressBar(-1);
+      // Taskleiste blinken lassen, falls das Fenster gerade nicht vorne ist.
+      if (!win.isFocused()) win.flashFrame(true);
+    }
     askRestart(info);
   });
   autoUpdater.on('error', (err) => {
     status('');
+    if (win && !win.isDestroyed()) win.setProgressBar(-1);
     console.error('[updater]', err?.message || err);
     if (manualCheck && win && !win.isDestroyed()) {
       dialog.showMessageBox(win, {
