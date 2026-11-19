@@ -41,8 +41,18 @@ fs.writeFileSync(
   `version: ${version}\nfiles:\n  - url: ${exe}\n    sha512: ${sha512}\n    size: ${daten.length}\npath: ${exe}\nsha512: ${sha512}\nreleaseNotes: '${notesYaml}'\nreleaseDate: '${new Date().toISOString()}'\n`,
 );
 
-const put = (file, contentType, cacheControl) =>
+const putOnce = (file, contentType, cacheControl) =>
   run("npx", ["-y", "wrangler@4.161.0", "r2", "object", "put", `${BUCKET}/${PREFIX}/${file}`, "--file", `"${path.join(dist, file)}"`, "--content-type", contentType, "--cache-control", `"${cacheControl}"`, "--remote"], true);
+
+// Hochladen klappt gelegentlich beim ersten Mal nicht (Verbindung) – dann einmal neu versuchen.
+const put = (...a) => {
+  try {
+    putOnce(...a);
+  } catch {
+    console.log("Noch ein Versuch …");
+    putOnce(...a);
+  }
+};
 
 console.log(`Lade nach ${BASE_URL} …`);
 // Erst Installer und Blockmap, ganz zum Schluss latest.yml – sonst sähen Programme eine Version, deren Datei noch fehlt.
