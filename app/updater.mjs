@@ -1,4 +1,4 @@
-// Selbst-Update über GitHub-Releases (öffentliches Repo oldschoolxp/OXP-Mod-Dashboard).
+// Selbst-Update über den eigenen Cloudflare-Speicher (https://updates.oldschoolxp.de/mod-dashboard).
 // Die Dashboard-Funktionen kommen von der Website und brauchen kein Update –
 // das hier betrifft nur das Programm selbst (Fenster, Menü, Hinweise …).
 //
@@ -25,7 +25,7 @@ function notesText(info) {
   const notes = info?.releaseNotes;
   if (!notes) return '';
   const text = Array.isArray(notes) ? notes.map((n) => n.note).join('\n') : String(notes);
-  // GitHub liefert die Release-Beschreibung als HTML.
+  // Die Beschreibung kann HTML enthalten (frühere GitHub-Releases).
   return text.replace(/<[^>]+>/g, '').replace(/\n{3,}/g, '\n\n').trim().slice(0, 600);
 }
 

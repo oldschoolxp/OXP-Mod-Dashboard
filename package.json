@@ -1,6 +1,6 @@
 {
   "name": "oxp-mod-dashboard",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "type": "module",
   "description": "OldschoolXP Mod-Dashboard als eigenes Windows-Programm",
@@ -10,7 +10,7 @@
     "start": "electron .",
     "selftest": "node werkzeuge/selbsttest.mjs",
     "installer": "electron-builder --win nsis",
-    "release": "electron-builder --win nsis --publish always"
+    "release": "node werkzeuge/veroeffentlichen.mjs"
   },
   "devDependencies": {
     "electron": "^44.4.3",
@@ -49,10 +49,8 @@
     },
     "publish": [
       {
-        "provider": "github",
-        "owner": "oldschoolxp",
-        "repo": "OXP-Mod-Dashboard",
-        "releaseType": "release"
+        "provider": "generic",
+        "url": "https://updates.oldschoolxp.de/mod-dashboard"
       }
     ]
   },

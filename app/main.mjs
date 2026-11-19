@@ -84,6 +84,7 @@ function buildMenu() {
         label: 'Ansicht',
         submenu: [
           { label: 'Neu laden', accelerator: 'F5', click: () => win.webContents.reload() },
+          { label: 'Neu laden', accelerator: 'CmdOrCtrl+R', visible: false, click: () => win.webContents.reload() },
           { label: 'Zum Dashboard', accelerator: 'CmdOrCtrl+H', click: () => win.loadURL(START_URL) },
           { type: 'separator' },
           { label: 'Immer im Vordergrund', type: 'checkbox', checked: onTop, accelerator: 'CmdOrCtrl+Shift+T', click: toggleAlwaysOnTop },
